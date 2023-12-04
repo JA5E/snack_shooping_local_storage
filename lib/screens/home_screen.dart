@@ -15,7 +15,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // reference the hive box
   final _productsBox = Hive.box('productsBox');
-  
+  //int _selectedMiniProductIndex = 0; // Track the selected MiniProduct index
+
+
   ToDoDataBase db = ToDoDataBase();
 
   @override
@@ -32,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // text controller
-  late int _id = 0;
+  late int _id = db.productsList.length - 1;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
@@ -61,21 +63,21 @@ class _HomePageState extends State<HomePage> {
       return 0;
     }
   }
-  double _parseDouble(String value) {
-  try {
-    return double.parse(value);
-  } catch (e) {
-    // Si ocurre un error durante la conversión, devolver 0.0
-    return 0.0;
-  }
-}
 
+  double _parseDouble(String value) {
+    try {
+      return double.parse(value);
+    } catch (e) {
+      // Si ocurre un error durante la conversión, devolver 0.0
+      return 0.0;
+    }
+  }
 
   // save new task
   void saveNewTask() {
     setState(() {
       List<String> restoredPhotos = _imagesController.text.split(", ");
-      
+
       db.productsList.add({
         "id": db.productsList.last["id"] + 1,
         "title": _titleController.text,
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         "quantity": _parseInt(_quantityController.text),
         "liked": false,
       });
-      
+
       _titleController.clear();
       _descriptionController.clear();
       _categoryController.clear();
@@ -101,11 +103,11 @@ class _HomePageState extends State<HomePage> {
       _rankingController.clear();
       _imagesController.clear();
       _quantityController.clear();
+      _id = db.productsList.length - 1;
     });
     Navigator.of(context).pop();
     db.updateDataBase();
     print(db.productsList);
-
   }
 
   // create a new task
@@ -140,54 +142,50 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-Widget build(BuildContext context) {
-
-  // // Filter the products list based on the desired ID
-  //   List<Map<String, dynamic>> filteredProducts = db.productsList
-  //       .where((product) => product["id"] == mainProductId)
-  //       .toList();
-
-  return Scaffold(
-    backgroundColor: Colors.white,
-    appBar: AppBar(
-      title: const Text('TO DO'),
-      elevation: 0,
-    ),
-    floatingActionButton: FloatingActionButton(
-      onPressed: createNewTask,
-      child: const Icon(Icons.add),
-    ),
-    body: Column(
-      children: [
-
-
-     
-               MainProduct(
-                title: db.productsList[_id]["title"],
-                liked: db.productsList[_id]["liked"],
-                price: db.productsList[_id]["price"],
-                rank: db.productsList[_id]["rank"],
-                quantity: db.productsList[_id]["quantity"],
-                img: db.productsList[_id]["images"][0],
-                onChanged: (value) => checkBoxChanged(value, _id),
-                deleteFunction: (context) => deleteTask(_id),
-              ),
-            
-   
-        Container(
-          height: 80, // Set the height as needed
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: db.productsList.length,
-            itemBuilder: (context, index) {
-              return MiniProduct(
-                img: db.productsList[index]["images"][0],
-              );
-            },
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('TO DO'),
+        elevation: 0,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: createNewTask,
+        child: const Icon(Icons.add),
+      ),
+      body: Column(
+        children: [
+          MainProduct(
+            id: _id,
+            title: db.productsList[_id]["title"],
+            liked: db.productsList[_id]["liked"],
+            price: db.productsList[_id]["price"],
+            rank: db.productsList[_id]["rank"],
+            quantity: db.productsList[_id]["quantity"],
+            img: db.productsList[_id]["images"][0],
+            onChanged: (value) => checkBoxChanged(value, _id),
           ),
-        ),
-      ],
-    ),
-  );
-}
+          Container(
+            height: 80, // Set the height as needed
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: db.productsList.length,
+              itemBuilder: (context, index) {
+                return MiniProduct(
+                  img: db.productsList[index]["images"][0],
+                  onTap: () {
+                    // Set the selected MiniProduct index and update the MainProduct
+                    setState(() {
+                      _id=index;
+                      //_selectedMiniProductIndex = index;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

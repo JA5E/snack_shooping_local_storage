@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:rigel/screens/productDetails_sceen.dart';
+import 'package:rigel/screens/shoopingCart_screen.dart';
 
 class MainProduct extends StatelessWidget {
+  final int id;
   final String title;
   final bool liked;
   final double price;
@@ -10,10 +13,10 @@ class MainProduct extends StatelessWidget {
   final int rank;
   final String img;
   Function(bool?)? onChanged;
-  Function(BuildContext)? deleteFunction;
 
   MainProduct({
     Key? key,
+    required this.id,
     required this.title,
     required this.liked,
     required this.price,
@@ -21,7 +24,6 @@ class MainProduct extends StatelessWidget {
     required this.rank,
     required this.img,
     required this.onChanged,
-    required this.deleteFunction,
   }) : super(key: key);
 
   @override
@@ -52,7 +54,7 @@ class MainProduct extends StatelessWidget {
                     height: screenWidth * 0.25, // Adjust as needed
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
-                      border: Border.all(color: Colors.red, width: 2.0),
+                      //border: Border.all(color: Colors.red, width: 2.0),
                     ),
                     child: Image.file(
                       File(img), // Replace with your image path
@@ -81,7 +83,7 @@ class MainProduct extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.red, width: 2.0),
+                      //border: Border.all(color: Colors.red, width: 2.0),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,8 +122,7 @@ class MainProduct extends StatelessWidget {
                         // Add to Cart Button
                         ElevatedButton(
                           onPressed: () {
-                            // Handle button press
-                            // You can add the logic for adding to cart here
+                            _addToCartButtonPressed(context);
                           },
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
@@ -150,12 +151,12 @@ class MainProduct extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white,
-                      border: Border.all(color: Colors.red, width: 2.0),
+                      //border: Border.all(color: Colors.red, width: 2.0),
                     ),
                     child: IconButton(
                       icon: const Icon(
                         Icons.favorite,
-                        color: Colors.white,
+                        color: Colors.red,
                       ),
                       onPressed: () {
                         // Handle like button press
@@ -170,5 +171,16 @@ class MainProduct extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _addToCartButtonPressed(BuildContext context) {
+    // Navigate to the new screen when "Add to cart" is pressed
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailedProductScreen(id: id),
+      ),
+    );
+    print(id);
   }
 }
