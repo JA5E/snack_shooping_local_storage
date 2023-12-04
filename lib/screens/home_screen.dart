@@ -25,10 +25,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
      if (_productsBox.get("productsList") == null) {
       db.createInitialData();
-      db.updateDataBase();
     } else {
-      db.cartFill();
       db.loadData();
+    }
+
+    if (_cartBox.get("cartList") == null) {
+      db.createInitialDataCart();
+      print(db.cartList);
+    } else {
+      db.loadDataCart();
     }
 
     super.initState();
@@ -92,6 +97,7 @@ class _HomePageState extends State<HomePage> {
         "images": restoredPhotos,
         "quantity": _parseInt(_quantityController.text),
         "liked": false,
+        "addedToCart": false,
       });
 
       _titleController.clear();

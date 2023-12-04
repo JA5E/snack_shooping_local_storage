@@ -23,16 +23,22 @@ class ToDoDataBase {
        "images":["image1","image2"],
        "quantity":300,
        "liked": true,
+       "addedToCart":false
        },
     ];
+  }
 
-    cartFill();
+  void createInitialDataCart() {
+    cartList = [];
   }
 
   // load the data from database
   void loadData() {
     productsList = _productsBox.get("productsList");
-    cartList = _productsBox.get("cartList");
+  }
+
+  void loadDataCart() {
+    cartList = _cartBox.get("cartList");
   }
 
   // update the database

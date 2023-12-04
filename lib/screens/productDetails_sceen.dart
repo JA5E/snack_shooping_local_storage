@@ -16,6 +16,7 @@ class DetailedProductScreen extends StatefulWidget {
 class _DetailedProductScreenState extends State<DetailedProductScreen> {
   // reference the hive box
   final _productsBox = Hive.box('productsBox');
+  final _cartBox = Hive.box('cartBox');
   //int _selectedMiniProductIndex = 0; // Track the selected MiniProduct index
 
   ToDoDataBase db = ToDoDataBase();
@@ -29,6 +30,12 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
     } else {
       // there already exists data
       db.loadData();
+    }
+    if (_cartBox.get("cartList") == null) {
+      db.createInitialDataCart();
+    } else {
+      // there already exists data
+      db.loadDataCart();
     }
 
     super.initState();
@@ -178,77 +185,85 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(16.0),
             ),
-            child: Column(
-              children: [
-                Text(
-                  "Quantity(${db.productsList[widget.id]["quantity"]}g)",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
+            child: Column(children: [
+              Text(
+                "Quantity(${db.productsList[widget.id]["quantity"]}g)",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+              // Quantity Selection and Total Price
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: DropdownButton<int>(
+                      value: selectedQuantity,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedQuantity = value!;
+                        });
+                      },
+                      items: List.generate(10, (index) => index + 1)
+                          .map<DropdownMenuItem<int>>((int value) {
+                        return DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-                // Quantity Selection and Total Price
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: DropdownButton<int>(
-                        value: selectedQuantity,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedQuantity = value!;
-                          });
-                        },
-                        items: List.generate(10, (index) => index + 1)
-                            .map<DropdownMenuItem<int>>((int value) {
-                          return DropdownMenuItem<int>(
-                            value: value,
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
+                  SizedBox(width: 8),
+                  Text(
+                    "\$${calculateTotalPrice().toStringAsFixed(2)}",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Total Price: \$${calculateTotalPrice().toStringAsFixed(2)}",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
+                  ),
+                ],
+              ),
+              // Add to Cart Button
+              // Add to Cart Button
+              ElevatedButton(
+                onPressed: () async {
+                  bool exist = false;
+                  for (final i in db.cartList) {
+                    if (!i.contains(widget.id)) {
+                      exist = false;
+                    } else {
+                      exist = true;
+                    }
+                  }
+                  if (!exist) {
+                    db.cartList.add([widget.id, selectedQuantity]);
+                    db.addToCart();
+                    db.updateDataBase();
+                    print(db.cartList);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Product added to the cart'),
                       ),
-                    ),
-                  ],
-                ),
-                // Add to Cart Button
-                // Add to Cart Button
-ElevatedButton(
-  onPressed: () async {
-    if (!db.cartList.contains(widget.id)) {
-      db.cartList.add(widget.id);
-      db.addToCart();
-      db.updateDataBase();
-      print(db.cartList);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Product added to the cart'),
-        ),
-      );
-    } else {
-      print(db.cartList);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Product is already in the cart'),
-        ),
-      );
-    }
-  },
-  child: Text('Add to Cart'),
-),]
-            ),
+                    );
+                  } else {
+                    print(db.cartList);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Product is already in the cart'),
+                      ),
+                    );
+                  }
+                },
+                child: Text('Add to Cart'),
+              ),
+            ]),
           ),
         ],
       ),
