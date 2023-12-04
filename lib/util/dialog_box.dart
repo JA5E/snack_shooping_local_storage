@@ -1,4 +1,8 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:rigel/screens/camera.dart';
 
 import 'my_button.dart';
 
@@ -36,7 +40,7 @@ class DialogBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: AlertDialog(
-        backgroundColor: Color(0xFFFFC476),
+        backgroundColor: const Color(0xFFFFC476),
         content: Container(
           //height: 200,
           child: Column(
@@ -45,85 +49,124 @@ class DialogBox extends StatelessWidget {
               // get user input
               TextField(
                 controller: titleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Title",
                 ),
               ),
-      
+
               TextField(
                 controller: descriptionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Description",
                 ),
               ),
               TextField(
                 controller: categoryController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Category",
                 ),
               ),
               TextField(
                 controller: caloriesController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Calories",
                 ),
               ),
               TextField(
                 controller: additivesController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Additives",
                 ),
               ),
               TextField(
                 controller: vitaminsController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Vitamins",
                 ),
               ),
               TextField(
                 controller: priceController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Price",
                 ),
               ),
               TextField(
                 controller: rankingController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Ranking",
                 ),
               ),
-              TextField(
-                controller: imagesController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Images",
-                ),
-              ),
+              // Here is generatet the code for the button for displaying MyHomePage class in the file camera.dart
+              // Here is the code for the button to navigate to MyHomePage class in the file camera.dart
               TextField(
                 controller: quantityController,
-                decoration: InputDecoration(
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Quantity",
                 ),
               ),
-      
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CameraScreen(
+                              title: "Your Title",
+                              onPhotosTaken: (List<String> photos) {
+                                // Do something with the list of photos
+                                print("Received photos: $photos");
+                                String concatenatedPhotos = photos.join(", ");
+                                imagesController.text = concatenatedPhotos;
+
+                                
+                              },
+                            )),
+                  );
+                },
+                child: Text("Go to Next Screen"),
+              ),
+
               // buttons -> save + cancel
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // save button
                   MyButton(text: "Save", onPressed: onSave),
-      
+
                   const SizedBox(width: 8),
-      
+
                   // cancel button
                   MyButton(text: "Cancel", onPressed: onCancel),
                 ],

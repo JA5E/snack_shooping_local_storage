@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -31,33 +33,39 @@ class ToDoTile extends StatelessWidget {
             )
           ],
         ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFC476),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              // checkbox
-              Checkbox(
-                value: taskCompleted,
-                onChanged: onChanged,
-                activeColor: Colors.black,
-              ),
+        child: IntrinsicWidth(
+  child: Container(
+    padding: const EdgeInsets.all(24),
+    decoration: BoxDecoration(
+      color: const Color(0xFFFFC476),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Row(
+      children: [
+        // checkbox
+        Checkbox(
+          value: taskCompleted,
+          onChanged: onChanged,
+          activeColor: Colors.black,
+        ),
 
-              // task name
-              Text(
-                taskName,
-                style: TextStyle(
-                  decoration: taskCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                ),
-              ),
-            ],
+        // task name
+        Flexible(
+          child: Text(
+            taskName,
+            style: TextStyle(
+              decoration: taskCompleted
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
+            ),
           ),
         ),
+        Image.file(File(taskName))
+      ],
+    ),
+  ),
+),
+
       ),
     );
   }

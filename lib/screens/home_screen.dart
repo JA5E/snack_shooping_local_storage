@@ -50,23 +50,34 @@ class _HomePageState extends State<HomePage> {
     print(_titleController);
   }
 
+  int _parseInt(String value) {
+    try {
+      return int.parse(value);
+    } catch (e) {
+      // Si ocurre un error durante la conversión, devolver 0
+      return 0;
+    }
+  }
+
   // save new task
   void saveNewTask() {
     setState(() {
-      db.productsList.add(
-        {"id":db.productsList.last["id"]+1,
-        "title":_titleController.text,
+      List<String> restoredPhotos = _imagesController.text.split(", ");
+
+      db.productsList.add({
+        "id": db.productsList.last["id"] + 1,
+        "title": _titleController.text,
         "description": _descriptionController.text,
-       "category": _categoryController.text,
-       "calories": int.parse(_caloriesController.text),
-       "additives": int.parse(_additivesController.text),
-       "vitamins": int.parse(_vitaminsController.text),
-       "price": int.parse(_priceController.text),
-       "ranking": int.parse(_rankingController.text),
-       "images":[_imagesController.text],
-       "quantity":int.parse(_quantityController.text),
-         "liked":false,
-        });
+        "category": _categoryController.text,
+        "calories": _parseInt(_caloriesController.text),
+        "additives": _parseInt(_additivesController.text),
+        "vitamins": _parseInt(_vitaminsController.text),
+        "price": _parseInt(_priceController.text),
+        "ranking": _parseInt(_rankingController.text),
+        "images": restoredPhotos,
+        "quantity": _parseInt(_quantityController.text),
+        "liked": false,
+      });
       _titleController.clear();
     });
     Navigator.of(context).pop();
@@ -121,7 +132,7 @@ class _HomePageState extends State<HomePage> {
         itemCount: db.productsList.length,
         itemBuilder: (context, index) {
           return ToDoTile(
-            taskName: db.productsList[index]["title"],
+            taskName: db.productsList[index]["images"][0],
             taskCompleted: db.productsList[index]["liked"],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
