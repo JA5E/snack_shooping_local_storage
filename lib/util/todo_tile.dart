@@ -6,6 +6,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class ToDoTile extends StatelessWidget {
   final String taskName;
   final bool taskCompleted;
+  final double price;
+  final int quantity;
+  final int rank;
   Function(bool?)? onChanged;
   Function(BuildContext)? deleteFunction;
 
@@ -13,6 +16,9 @@ class ToDoTile extends StatelessWidget {
     super.key,
     required this.taskName,
     required this.taskCompleted,
+    required this.price,
+    required this.quantity,
+    required this.rank,
     required this.onChanged,
     required this.deleteFunction,
   });
@@ -38,7 +44,7 @@ class ToDoTile extends StatelessWidget {
     padding: const EdgeInsets.all(24),
     decoration: BoxDecoration(
       color: const Color(0xFFFFC476),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(100),
     ),
     child: Row(
       children: [
@@ -46,7 +52,7 @@ class ToDoTile extends StatelessWidget {
         Checkbox(
           value: taskCompleted,
           onChanged: onChanged,
-          activeColor: Colors.black,
+          activeColor: Colors.white70,
         ),
 
         // task name
@@ -60,7 +66,8 @@ class ToDoTile extends StatelessWidget {
             ),
           ),
         ),
-        Image.file(File(taskName))
+      
+        //Image.file(File(taskName))
       ],
     ),
   ),

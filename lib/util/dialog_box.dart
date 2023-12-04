@@ -104,15 +104,18 @@ class DialogBox extends StatelessWidget {
               ),
               TextField(
                 controller: priceController,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(
+                    decimal: true), // Cambiado para permitir números decimales
                 inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^\d+\.?\d{0,2}')), // Permitir hasta 2 decimales
                 ],
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Price",
                 ),
               ),
+
               TextField(
                 controller: rankingController,
                 keyboardType: TextInputType.number,
@@ -149,13 +152,11 @@ class DialogBox extends StatelessWidget {
                                 print("Received photos: $photos");
                                 String concatenatedPhotos = photos.join(", ");
                                 imagesController.text = concatenatedPhotos;
-
-                                
                               },
                             )),
                   );
                 },
-                child: Text("Go to Next Screen"),
+                child: Text("Take Photos"),
               ),
 
               // buttons -> save + cancel
@@ -163,7 +164,44 @@ class DialogBox extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // save button
-                  MyButton(text: "Save", onPressed: onSave),
+                  MyButton(
+                    text: "Save",
+                    onPressed: () {
+                      // Validar si todos los campos están completos
+                      if (titleController.text.isNotEmpty &&
+                          descriptionController.text.isNotEmpty &&
+                          categoryController.text.isNotEmpty &&
+                          caloriesController.text.isNotEmpty &&
+                          additivesController.text.isNotEmpty &&
+                          vitaminsController.text.isNotEmpty &&
+                          priceController.text.isNotEmpty &&
+                          rankingController.text.isNotEmpty &&
+                          imagesController.text.isNotEmpty &&
+                          quantityController.text.isNotEmpty) {
+                        onSave();
+                      } else {
+                        // Mostrar un mensaje o realizar alguna acción cuando no todos los campos están completos
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text("Error"),
+                              content: Text(
+                                  "Completa todos los campos antes de guardar."),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
 
                   const SizedBox(width: 8),
 

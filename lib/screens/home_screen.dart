@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../data/database.dart';
 import '../util/dialog_box.dart';
-import '../util/todo_tile.dart';
+import '../util/main_product.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -58,6 +58,15 @@ class _HomePageState extends State<HomePage> {
       return 0;
     }
   }
+  double _parseDouble(String value) {
+  try {
+    return double.parse(value);
+  } catch (e) {
+    // Si ocurre un error durante la conversión, devolver 0.0
+    return 0.0;
+  }
+}
+
 
   // save new task
   void saveNewTask() {
@@ -72,13 +81,22 @@ class _HomePageState extends State<HomePage> {
         "calories": _parseInt(_caloriesController.text),
         "additives": _parseInt(_additivesController.text),
         "vitamins": _parseInt(_vitaminsController.text),
-        "price": _parseInt(_priceController.text),
+        "price": _parseDouble(_priceController.text),
         "ranking": _parseInt(_rankingController.text),
         "images": restoredPhotos,
         "quantity": _parseInt(_quantityController.text),
         "liked": false,
       });
       _titleController.clear();
+      _descriptionController.clear();
+      _categoryController.clear();
+      _caloriesController.clear();
+      _additivesController.clear();
+      _vitaminsController.clear();
+      _priceController.clear();
+      _rankingController.clear();
+      _imagesController.clear();
+      _quantityController.clear();
     });
     Navigator.of(context).pop();
     db.updateDataBase();
@@ -131,9 +149,13 @@ class _HomePageState extends State<HomePage> {
       body: ListView.builder(
         itemCount: db.productsList.length,
         itemBuilder: (context, index) {
+
           return ToDoTile(
-            taskName: db.productsList[index]["images"][0],
-            taskCompleted: db.productsList[index]["liked"],
+            title: db.productsList[index]["images"][0],
+            liked: db.productsList[index]["liked"],
+            price: db.productsList[index]["price"],
+            rank: db.productsList[index]["rank"],
+            quantity: db.productsList[index]["quantity"],
             onChanged: (value) => checkBoxChanged(value, index),
             deleteFunction: (context) => deleteTask(index),
           );

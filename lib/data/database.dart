@@ -17,7 +17,7 @@ class ToDoDataBase {
        "additives": 3,
        "vitamins": 8,
        "price":9.43,
-       "ranking":4.5,
+       "rank":4,
        "images":["image1","image2"],
        "quantity":300,
        "liked": true,
