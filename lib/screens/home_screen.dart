@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // reference the hive box
   final _productsBox = Hive.box('productsBox');
+  final _cartBox = Hive.box('cartBox');
   //int _selectedMiniProductIndex = 0; // Track the selected MiniProduct index
 
 
@@ -22,11 +23,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // if this is the 1st time ever openin the app, then create default data
-    if (_productsBox.get("productsList") == null) {
+     if (_productsBox.get("productsList") == null) {
       db.createInitialData();
+      db.updateDataBase();
     } else {
-      // there already exists data
+      db.cartFill();
       db.loadData();
     }
 

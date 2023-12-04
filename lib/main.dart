@@ -10,7 +10,7 @@ void main() async {
 
   // open a box
   var productsBox = await Hive.openBox('productsBox');
-
+var cartBox = await Hive.openBox('cartBox');
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
 

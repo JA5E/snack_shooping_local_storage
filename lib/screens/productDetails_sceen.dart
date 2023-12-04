@@ -223,7 +223,31 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
                     ),
                   ],
                 ),
-              ],
+                // Add to Cart Button
+                // Add to Cart Button
+ElevatedButton(
+  onPressed: () async {
+    if (!db.cartList.contains(widget.id)) {
+      db.cartList.add(widget.id);
+      db.addToCart();
+      db.updateDataBase();
+      print(db.cartList);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Product added to the cart'),
+        ),
+      );
+    } else {
+      print(db.cartList);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Product is already in the cart'),
+        ),
+      );
+    }
+  },
+  child: Text('Add to Cart'),
+),]
             ),
           ),
         ],

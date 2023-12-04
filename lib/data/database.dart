@@ -2,9 +2,11 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class ToDoDataBase {
   List productsList = [];
+  List cartList = [];
 
   // reference our box
   final _productsBox = Hive.box('productsBox');
+  final _cartBox = Hive.box('cartBox');
 
   // run this method if this is the 1st time ever opening this app
   void createInitialData() {
@@ -23,15 +25,27 @@ class ToDoDataBase {
        "liked": true,
        },
     ];
+
+    cartFill();
   }
 
   // load the data from database
   void loadData() {
     productsList = _productsBox.get("productsList");
+    cartList = _productsBox.get("cartList");
   }
 
   // update the database
   void updateDataBase() {
+    _productsBox.put("cartList", cartList);
     _productsBox.put("productsList", productsList);
+  }
+
+  void addToCart(){
+    _cartBox.put("cartList", cartList);
+  }
+
+  void cartFill(){
+    cartList = [];
   }
 }
