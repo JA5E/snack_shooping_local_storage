@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rigel/util/todo_tile.dart';
 import '../data/database.dart';
 import '../util/dialog_box.dart';
 import '../util/main_product.dart';
@@ -14,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // reference the hive box
   final _productsBox = Hive.box('productsBox');
+  
   ToDoDataBase db = ToDoDataBase();
 
   @override
@@ -30,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // text controller
+  late int _id = 0;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _categoryController = TextEditingController();
@@ -72,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   void saveNewTask() {
     setState(() {
       List<String> restoredPhotos = _imagesController.text.split(", ");
-
+      
       db.productsList.add({
         "id": db.productsList.last["id"] + 1,
         "title": _titleController.text,
@@ -82,11 +85,12 @@ class _HomePageState extends State<HomePage> {
         "additives": _parseInt(_additivesController.text),
         "vitamins": _parseInt(_vitaminsController.text),
         "price": _parseDouble(_priceController.text),
-        "ranking": _parseInt(_rankingController.text),
+        "rank": _parseInt(_rankingController.text),
         "images": restoredPhotos,
         "quantity": _parseInt(_quantityController.text),
         "liked": false,
       });
+      
       _titleController.clear();
       _descriptionController.clear();
       _categoryController.clear();
@@ -101,6 +105,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
     db.updateDataBase();
     print(db.productsList);
+
   }
 
   // create a new task
@@ -135,32 +140,54 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white70,
-      appBar: AppBar(
-        title: const Text('TO DO'),
-        elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask,
-        child: const Icon(Icons.add),
-      ),
-      body: ListView.builder(
-        itemCount: db.productsList.length,
-        itemBuilder: (context, index) {
+Widget build(BuildContext context) {
 
-          return ToDoTile(
-            title: db.productsList[index]["images"][0],
-            liked: db.productsList[index]["liked"],
-            price: db.productsList[index]["price"],
-            rank: db.productsList[index]["rank"],
-            quantity: db.productsList[index]["quantity"],
-            onChanged: (value) => checkBoxChanged(value, index),
-            deleteFunction: (context) => deleteTask(index),
-          );
-        },
-      ),
-    );
-  }
+  // // Filter the products list based on the desired ID
+  //   List<Map<String, dynamic>> filteredProducts = db.productsList
+  //       .where((product) => product["id"] == mainProductId)
+  //       .toList();
+
+  return Scaffold(
+    backgroundColor: Colors.white,
+    appBar: AppBar(
+      title: const Text('TO DO'),
+      elevation: 0,
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: createNewTask,
+      child: const Icon(Icons.add),
+    ),
+    body: Column(
+      children: [
+
+
+     
+               MainProduct(
+                title: db.productsList[_id]["title"],
+                liked: db.productsList[_id]["liked"],
+                price: db.productsList[_id]["price"],
+                rank: db.productsList[_id]["rank"],
+                quantity: db.productsList[_id]["quantity"],
+                img: db.productsList[_id]["images"][0],
+                onChanged: (value) => checkBoxChanged(value, _id),
+                deleteFunction: (context) => deleteTask(_id),
+              ),
+            
+   
+        Container(
+          height: 80, // Set the height as needed
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: db.productsList.length,
+            itemBuilder: (context, index) {
+              return MiniProduct(
+                img: db.productsList[index]["images"][0],
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }

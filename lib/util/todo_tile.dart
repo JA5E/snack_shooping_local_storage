@@ -1,78 +1,46 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
-class ToDoTile extends StatelessWidget {
-  final String taskName;
-  final bool taskCompleted;
-  final double price;
-  final int quantity;
-  final int rank;
-  Function(bool?)? onChanged;
-  Function(BuildContext)? deleteFunction;
+class MiniProduct extends StatelessWidget {
+  final String img;
 
-  ToDoTile({
-    super.key,
-    required this.taskName,
-    required this.taskCompleted,
-    required this.price,
-    required this.quantity,
-    required this.rank,
-    required this.onChanged,
-    required this.deleteFunction,
-  });
+  MiniProduct({
+    Key? key,
+    required this.img,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 25.0, right: 25, top: 25),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: const StretchMotion(),
+      padding: const EdgeInsets.only(left: 15, right: 15),
+      child: Container(
+        width: 80, // Adjust the width as needed
+        child: Column(
           children: [
-            SlidableAction(
-              onPressed: deleteFunction,
-              icon: Icons.delete,
-              backgroundColor: Colors.red.shade300,
-              borderRadius: BorderRadius.circular(12),
-            )
+            GestureDetector(
+              onTap: () {
+                // Execute your action here when the image is clicked
+                print('Image Clicked!');
+
+                // You can replace the print statement with the desired action
+                // For example, navigate to a new screen:
+                // Navigator.of(context).push(MaterialPageRoute(builder: (context) => YourNewScreen()));
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.red, width: 2.0),
+                ),
+                child: Image.file(
+                  File(img),
+                  fit: BoxFit.scaleDown,
+                ),
+              ),
+            ),
           ],
         ),
-        child: IntrinsicWidth(
-  child: Container(
-    padding: const EdgeInsets.all(24),
-    decoration: BoxDecoration(
-      color: const Color(0xFFFFC476),
-      borderRadius: BorderRadius.circular(100),
-    ),
-    child: Row(
-      children: [
-        // checkbox
-        Checkbox(
-          value: taskCompleted,
-          onChanged: onChanged,
-          activeColor: Colors.white70,
-        ),
-
-        // task name
-        Flexible(
-          child: Text(
-            taskName,
-            style: TextStyle(
-              decoration: taskCompleted
-                  ? TextDecoration.lineThrough
-                  : TextDecoration.none,
-            ),
-          ),
-        ),
-      
-        //Image.file(File(taskName))
-      ],
-    ),
-  ),
-),
-
       ),
     );
   }
