@@ -102,17 +102,23 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
                   SizedBox(width: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      5,
-                      (index) => Icon(
-                        index < db.productsList[widget.id]["rank"]
-                            ? Icons.star
-                            : Icons.star_border,
-                        color: index < db.productsList[widget.id]["rank"]
-                            ? Colors.white
-                            : Colors.white,
-                      ),
-                    ),
+                    children: [
+                      for (int starIndex = 0; starIndex < 5; starIndex++)
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              db.productsList[widget.id]["rank"] =
+                                  starIndex + 1;
+                            });
+                          },
+                          child: Icon(
+                            starIndex < db.productsList[widget.id]["rank"]
+                                ? Icons.star
+                                : Icons.star_border,
+                            color: Colors.white,
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -140,7 +146,8 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
                     },
                     {
                       "name": 'Additive',
-                      "value": db.productsList[widget.id]["additives"].toString()
+                      "value":
+                          db.productsList[widget.id]["additives"].toString()
                     },
                     {
                       "name": 'Vitamin',
@@ -269,44 +276,43 @@ class _DetailedProductScreenState extends State<DetailedProductScreen> {
                 ),
               ]),
             ),
-        
-        
+
             // Rounded Small Modal with Quantity Information
             Container(
-  margin: const EdgeInsets.all(8.0),
-  padding: const EdgeInsets.all(8.0),
-  decoration: BoxDecoration(
-    color: Colors.black,
-    borderRadius: BorderRadius.circular(16.0),
-  ),
-  child: InkWell(
-    onTap: () {
-      // Navigate to another screen (replace 'YourDestinationScreen' with the actual screen)
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => CartScreen()),
-      );
-    },
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.shopping_bag_outlined, // You can replace this with your shopping cart icon
-          color: Colors.white,
-        ),
-        SizedBox(width: 8),
-        Text(
-          "Go to Cart",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
-      ],
-    ),
-  ),
-),
-
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: InkWell(
+                onTap: () {
+                  // Navigate to another screen (replace 'YourDestinationScreen' with the actual screen)
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons
+                          .shopping_bag_outlined, // You can replace this with your shopping cart icon
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Go to Cart",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),

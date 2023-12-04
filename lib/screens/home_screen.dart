@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     } else {
       db.loadData();
     }
-    db.productsList.removeAt(0);
 
     if (_cartBox.get("cartList") == null) {
       db.createInitialDataCart();
@@ -152,7 +151,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -189,48 +187,56 @@ class _HomePageState extends State<HomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-               GestureDetector(
-  onTap: () {
-    setState(() {
-      // Filter products based on the "Dried Fruits" category
-      products = db.productsList
-          .where((product) => product["category"] == "Dried Fruits")
-          .toList();
-    });
-  },
-  child: Column(
-    children: [
-      Image.asset(
-        'lib/assets/fruit.png', // Ruta de la imagen para "Dried Fruits"
-        width: 50,
-        height: 50,
-      ),
-      Text('Dried Fruits'),
-    ],
-  ),
-),
-
-GestureDetector(
-  onTap: () {
-    setState(() {
-      // Filter products based on the "Nuts" category
-      products = db.productsList
-          .where((product) => product["category"] == "Nuts")
-          .toList();
-    });
-  },
-  child: Column(
-    children: [
-      Image.asset(
-        'lib/assets/nuts.png', // Ruta de la imagen para "Nuts"
-        width: 50,
-        height: 50,
-      ),
-      Text('Nuts'),
-    ],
-  ),
-),
-
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      // Filter products based on the "Dried Fruits" category
+                      products = db.productsList
+                          .where((product) =>
+                              product["category"] == "Dried Fruits")
+                          .toList();
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'lib/assets/fruit.png', // Ruta de la imagen para "Dried Fruits"
+                        width: 50,
+                        height: 50,
+                      ),
+                      Text('Dried Fruits'),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      // Filter products based on the "Dried Fruits" category
+                      products = db.productsList;
+                          
+                    });
+                  }, child: Text("ALL"),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      // Filter products based on the "Nuts" category
+                      products = db.productsList
+                          .where((product) => product["category"] == "Nuts")
+                          .toList();
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'lib/assets/nuts.png', // Ruta de la imagen para "Nuts"
+                        width: 50,
+                        height: 50,
+                      ),
+                      Text('Nuts'),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
