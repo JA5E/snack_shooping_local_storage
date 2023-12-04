@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:rigel/screens/shoopingCart_screen.dart';
 import 'package:rigel/util/todo_tile.dart';
 import '../data/database.dart';
 import '../util/dialog_box.dart';
@@ -17,17 +18,18 @@ class _HomePageState extends State<HomePage> {
   final _productsBox = Hive.box('productsBox');
   final _cartBox = Hive.box('cartBox');
   //int _selectedMiniProductIndex = 0; // Track the selected MiniProduct index
-
+  List products = [];
 
   ToDoDataBase db = ToDoDataBase();
 
   @override
   void initState() {
-     if (_productsBox.get("productsList") == null) {
+    if (_productsBox.get("productsList") == null) {
       db.createInitialData();
     } else {
       db.loadData();
     }
+    db.productsList.removeAt(0);
 
     if (_cartBox.get("cartList") == null) {
       db.createInitialDataCart();
@@ -150,11 +152,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('TO DO'),
+        title: const Text(''),
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: () {
+            // Implement the action when the back button is pressed
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_bag_outlined),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartScreen()),
+              );
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTask,
@@ -162,6 +182,59 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          // Row with buttons
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+               GestureDetector(
+  onTap: () {
+    setState(() {
+      // Filter products based on the "Dried Fruits" category
+      products = db.productsList
+          .where((product) => product["category"] == "Dried Fruits")
+          .toList();
+    });
+  },
+  child: Column(
+    children: [
+      Image.asset(
+        'lib/assets/fruit.png', // Ruta de la imagen para "Dried Fruits"
+        width: 50,
+        height: 50,
+      ),
+      Text('Dried Fruits'),
+    ],
+  ),
+),
+
+GestureDetector(
+  onTap: () {
+    setState(() {
+      // Filter products based on the "Nuts" category
+      products = db.productsList
+          .where((product) => product["category"] == "Nuts")
+          .toList();
+    });
+  },
+  child: Column(
+    children: [
+      Image.asset(
+        'lib/assets/nuts.png', // Ruta de la imagen para "Nuts"
+        width: 50,
+        height: 50,
+      ),
+      Text('Nuts'),
+    ],
+  ),
+),
+
+              ],
+            ),
+          ),
+          // MainProduct widget
           MainProduct(
             id: _id,
             title: db.productsList[_id]["title"],
@@ -172,19 +245,19 @@ class _HomePageState extends State<HomePage> {
             img: db.productsList[_id]["images"][0],
             onChanged: (value) => checkBoxChanged(value, _id),
           ),
+          // MiniProduct widget
           Container(
             height: 80, // Set the height as needed
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: db.productsList.length,
+              itemCount: products.length,
               itemBuilder: (context, index) {
                 return MiniProduct(
-                  img: db.productsList[index]["images"][0],
+                  img: products[index]["images"][0],
                   onTap: () {
                     // Set the selected MiniProduct index and update the MainProduct
                     setState(() {
-                      _id=index;
-                      //_selectedMiniProductIndex = index;
+                      _id = index;
                     });
                   },
                 );

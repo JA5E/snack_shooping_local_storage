@@ -63,12 +63,45 @@ class DialogBox extends StatelessWidget {
                 ),
               ),
               TextField(
-                controller: categoryController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Category",
-                ),
+  controller: categoryController,
+  decoration: const InputDecoration(
+    border: OutlineInputBorder(),
+    hintText: "Category",
+  ),
+  readOnly: true,
+  onTap: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        String selectedCategory = categoryController.text;
+        return AlertDialog(
+          title: Text("Select Category"),
+          content: Column(
+            children: [
+              ListTile(
+                title: Text("Dried Fruits"),
+                onTap: () {
+                  Navigator.pop(context, "Dried Fruits");
+                },
               ),
+              ListTile(
+                title: Text("Nuts"),
+                onTap: () {
+                  Navigator.pop(context, "Nuts");
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    ).then((selectedCategory) {
+      if (selectedCategory != null) {
+        categoryController.text = selectedCategory;
+      }
+    });
+  },
+),
+
               TextField(
                 controller: caloriesController,
                 keyboardType: TextInputType.number,
